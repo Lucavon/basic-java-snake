@@ -39,16 +39,16 @@ public class SnakeGame extends JFrame {
             public void keyPressed(KeyEvent e) {
                 switch(e.getKeyCode()) {
                     case 37:
-                        snakeDirection = 0;
+                        setDirection((byte)0);
                         break;
                     case 38:
-                        snakeDirection = 1;
+                        setDirection((byte)1);
                         break;
                     case 39:
-                        snakeDirection = 2;
+                        setDirection((byte)2);
                         break;
                     case 40:
-                        snakeDirection = 3;
+                        setDirection((byte)3);
                         break;
                 }
             }
@@ -70,6 +70,13 @@ public class SnakeGame extends JFrame {
         }, 0, 1000/snakeSpeed);
     }
 
+    private void setDirection(byte direction) {
+        Location move = getMoveLocation(direction);
+        if(field[move.getX()][move.getZ()] == FIELD_SNAKE)
+            return;
+        snakeDirection = direction;
+    }
+
     public void gameTick() {
         move();
         while(tail.size() > snakeLength) {
@@ -80,8 +87,9 @@ public class SnakeGame extends JFrame {
         panel.repaint();
     }
 
-    private void move() {
-        switch(snakeDirection) {
+    private Location getMoveLocation(byte direction) {
+        Location currentSnakeLocation = new Location(this.currentSnakeLocation.getX(), this.currentSnakeLocation.getZ());
+        switch(direction) {
             case 0:
                 int x = currentSnakeLocation.getX() - 1;
                 if(x < 0)
@@ -110,6 +118,11 @@ public class SnakeGame extends JFrame {
                 System.out.println("Invalid snake direction?!");
                 break;
         }
+        return currentSnakeLocation;
+    }
+
+    private void move() {
+        currentSnakeLocation = getMoveLocation(snakeDirection);
         field[currentSnakeLocation.getX()][currentSnakeLocation.getZ()] = FIELD_SNAKE;
         if(isInsideSnake(currentSnakeLocation.getX(), currentSnakeLocation.getZ())) {
             dead();
