@@ -78,12 +78,13 @@ public class SnakeGame extends JFrame {
     }
 
     public void gameTick() {
-        move();
         while(tail.size() > snakeLength) {
             Location loc = tail.get(0);
             field[loc.getX()][loc.getZ()] = FIELD_NONE;
             tail.remove(0);
         }
+        //Move now: Otherwise you can't go from left to right if you're as long as the field's width
+        move();
         panel.repaint();
     }
 
